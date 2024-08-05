@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map Viewer</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([0, 0], 2);
+
+        // Custom map image dimensions and bounds
+        var imageWidth = 8000;
+        var imageHeight = 8000;
+        var imageUrl = 'Erangel_Main_High_Res.png';
+        var southWest = map.unproject([0, imageHeight], 1);
+        var northEast = map.unproject([imageWidth, 0], 1);
+        var bounds = new L.LatLngBounds(southWest, northEast);
+
+        // Add the image overlay to the map
+        L.imageOverlay(imageUrl, bounds).addTo(map);
+
+        // Fit the map to the image bounds
+        map.fitBounds(bounds);
+
+        var points = [];
+
+        // Add a click event to get distance between two points
+        map.on('click', function(e) {
+            if (points.length < 2) {
+                points.push(e.latlng);
+                L.marker(e.latlng).addTo(map);
+            }
+            if (points.length === 2) {
+                var distance = map.distance(points[0], points[1]);
+                alert('Distance: ' + distance.toFixed(2) + ' meters');
+                points = [];
+            }
+        });
+    </script>
+</body>
+</html>
