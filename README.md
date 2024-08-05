@@ -1,1 +1,1 @@
-# pubg_distance_calculator
+# distance_calculator
